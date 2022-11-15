@@ -185,7 +185,64 @@ public class Biblioteca
         return null;
     }
 
-    public void ElencoPrestiti(string nome, string cognome) {
+    public List<Prestito> ElencoPrestitiLibri() {
+        try
+        {
+            List<Prestito> prestiti = new List<Prestito>();
+            connessioneSql.Open();
+            string query = "SELECT libri.isbn,libri.titolo,prestitiLibri.inizio, prestitiLibri.fine FROM prestitiLibri " +
+                "INNER JOIN libri ON prestitiLibri.libro_id = libri.id";
+            SqlCommand cmd = new SqlCommand(query, connessioneSql);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                string isbn = reader.GetString(0);
+                string titolo = reader.GetString(1);
+                string inizio = Convert.ToString(reader.GetDateTime(2));
+                string fine = Convert.ToString(reader.GetDateTime(3));
+                prestiti.Add(new Prestito(isbn,titolo,inizio,fine));
+            }
+            return prestiti;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            connessioneSql.Close();
+        }
+        return null;
+    }
 
+    public List<Prestito> ElencoPrestitiDvd()
+    {
+        try
+        {
+            List<Prestito> prestiti = new List<Prestito>();
+            connessioneSql.Open();
+            string query = "SELECT dvd.seriale,dvd.titolo,prestitiDvd.inizio, prestitiDvd.fine FROM prestitiDvd " +
+                "INNER JOIN dvd ON prestitiDvd.dvd_id = dvd.id";
+            SqlCommand cmd = new SqlCommand(query, connessioneSql);
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                string seriale = reader.GetString(0);
+                string titolo = reader.GetString(1);
+                string inizio = Convert.ToString(reader.GetDateTime(2));
+                string fine = Convert.ToString(reader.GetDateTime(3));
+                prestiti.Add(new Prestito(seriale, titolo, inizio, fine));
+            }
+            return prestiti;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            connessioneSql.Close();
+        }
+        return null;
     }
 }

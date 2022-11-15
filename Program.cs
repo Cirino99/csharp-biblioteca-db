@@ -11,7 +11,9 @@ do
     Console.WriteLine("4) Cerca un dvd");
     Console.WriteLine("5) Stampa tutti i libri presenti");
     Console.WriteLine("6) Stampa tutti i dvd presenti");
-    Console.WriteLine("7) esci");
+    Console.WriteLine("7) Stampa tutti i prestiti dei Libri");
+    Console.WriteLine("8) Stampa tutti i prestiti dei Dvd");
+    Console.WriteLine("9) esci");
     string scelta = Console.ReadLine();
     switch (scelta)
     {
@@ -70,6 +72,16 @@ do
             List<Dvd> dvd6 = biblioteca.RaccoltaDvd();
             foreach (Dvd dvd in dvd6)
                 Console.WriteLine(dvd.ToString());
+            break;
+        case "7":
+            List<Prestito> prestiti7 = biblioteca.ElencoPrestitiLibri();
+            foreach (Prestito prestito in prestiti7)
+                Console.WriteLine(prestito.ToString());
+            break;
+        case "8":
+            List<Prestito> prestiti8 = biblioteca.ElencoPrestitiDvd();
+            foreach (Prestito prestito in prestiti8)
+                Console.WriteLine(prestito.ToString());
             break;
         default:
             esci = true;
