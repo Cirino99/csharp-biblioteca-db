@@ -245,4 +245,46 @@ public class Biblioteca
         }
         return null;
     }
+
+    public void NuovoPrestitoLibro(Libro libro, string inizio, string fine)
+    {
+        try
+        {
+            connessioneSql.Open();
+            string query = "SELECT id FROM libri WHERE title=@Titolo";
+            SqlCommand cmd = new SqlCommand(query, connessioneSql);
+            cmd.Parameters.Add(new SqlParameter("@Titolo", libro.Titolo));
+            SqlDataReader reader = cmd.ExecuteReader();
+            int id = -1;
+            while (reader.Read())
+            {
+                id = reader.GetInt32(0);
+            }
+            query = "SELECT * FROM prestitiLibri WHERE libro_id = @Libro_id AND fine < @ToDay";
+            cmd = new SqlCommand(query, connessioneSql);
+            cmd.Parameters.Add(new SqlParameter("@Libro_id", id));
+            cmd.Parameters.Add(new SqlParameter("@ToDay", DateOnly.FromDateTime(DateTime.Now)));
+            reader = cmd.ExecuteReader();
+            if(!reader.HasRows)
+            {
+                string insertQuery = "INSERT INTO prestitiLibri (libro_id,inizio,fine) VALUES(@Libro_id,@Inizio,@Fine)";
+                SqlCommand insertCommand = new SqlCommand(insertQuery, connessioneSql);
+                insertCommand.Parameters.Add(new SqlParameter("@Libro_id", id));
+                insertCommand.Parameters.Add(new SqlParameter("@Inizio", inizio));
+                insertCommand.Parameters.Add(new SqlParameter("@Fine", fine));
+                int affectedRows = insertCommand.ExecuteNonQuery();
+            } else
+            {
+                Console.WriteLine("Libro non disponibile al momento, tornerà disponibile il {0}",reader.GetDateTime(3));
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        finally
+        {
+            connessioneSql.Close();
+        }
+    }
 }
