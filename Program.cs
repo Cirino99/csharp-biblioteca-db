@@ -13,7 +13,8 @@ do
     Console.WriteLine("6) Stampa tutti i dvd presenti");
     Console.WriteLine("7) Stampa tutti i prestiti dei Libri");
     Console.WriteLine("8) Stampa tutti i prestiti dei Dvd");
-    Console.WriteLine("9) esci");
+    Console.WriteLine("9) Prendi in prestito un libro");
+    Console.WriteLine("10) esci");
     string scelta = Console.ReadLine();
     switch (scelta)
     {
@@ -82,6 +83,15 @@ do
             List<Prestito> prestiti8 = biblioteca.ElencoPrestitiDvd();
             foreach (Prestito prestito in prestiti8)
                 Console.WriteLine(prestito.ToString());
+            break;
+        case "9":
+            Console.WriteLine("inserisci il titolo del libro da prendere in prestito");
+            string titolo9 = Console.ReadLine();
+            Libro libro9 = biblioteca.RicercaLibro(titolo9);
+            if (libro9 != null)
+            {
+                biblioteca.NuovoPrestitoLibro(libro9, "16/11/2022", "18/11/2022");
+            }
             break;
         default:
             esci = true;

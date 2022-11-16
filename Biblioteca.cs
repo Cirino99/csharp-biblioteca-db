@@ -251,7 +251,7 @@ public class Biblioteca
         try
         {
             connessioneSql.Open();
-            string query = "SELECT id FROM libri WHERE title=@Titolo";
+            string query = "SELECT id FROM libri WHERE titolo=@Titolo";
             SqlCommand cmd = new SqlCommand(query, connessioneSql);
             cmd.Parameters.Add(new SqlParameter("@Titolo", libro.Titolo));
             SqlDataReader reader = cmd.ExecuteReader();
