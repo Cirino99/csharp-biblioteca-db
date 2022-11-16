@@ -260,13 +260,16 @@ public class Biblioteca
             {
                 id = reader.GetInt32(0);
             }
-            query = "SELECT * FROM prestitiLibri WHERE libro_id = @Libro_id AND fine < @ToDay";
-            cmd = new SqlCommand(query, connessioneSql);
-            cmd.Parameters.Add(new SqlParameter("@Libro_id", id));
-            cmd.Parameters.Add(new SqlParameter("@ToDay", DateOnly.FromDateTime(DateTime.Now)));
-            reader = cmd.ExecuteReader();
-            if(!reader.HasRows)
+            reader.Close();
+            query = "SELECT * FROM prestitiLibri WHERE libro_id = @Libro_id AND fine > @ToDay";
+            SqlCommand cmd2 = new SqlCommand(query, connessioneSql);
+            cmd2.Parameters.Add(new SqlParameter("@Libro_id", id));
+            string data = Convert.ToString(DateOnly.FromDateTime(DateTime.Now));
+            cmd2.Parameters.Add(new SqlParameter("@ToDay", data));
+            SqlDataReader reader2 = cmd2.ExecuteReader();
+            if (!reader2.HasRows)
             {
+                reader2.Close();
                 string insertQuery = "INSERT INTO prestitiLibri (libro_id,inizio,fine) VALUES(@Libro_id,@Inizio,@Fine)";
                 SqlCommand insertCommand = new SqlCommand(insertQuery, connessioneSql);
                 insertCommand.Parameters.Add(new SqlParameter("@Libro_id", id));
@@ -275,7 +278,12 @@ public class Biblioteca
                 int affectedRows = insertCommand.ExecuteNonQuery();
             } else
             {
-                Console.WriteLine("Libro non disponibile al momento, tornerà disponibile il {0}",reader.GetDateTime(3));
+                while (reader2.Read())
+                {
+                    string disponibilità = Convert.ToString(reader2.GetDateTime(3));
+                    Console.WriteLine("Libro non disponibile al momento, tornerà disponibile il {0}", disponibilità);
+                }
+                reader2.Close();
             }
         }
         catch (Exception e)
